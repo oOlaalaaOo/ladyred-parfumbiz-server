@@ -13,9 +13,11 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 
         const user = await UserModel.findOne({
             username: data.username,
-        }).exec();
+        })
+            .select('+password')
+            .exec();
 
-        if (!user || user == null) {
+        if (!user || typeof user === 'undefined') {
             return res.status(401).json({
                 error: {
                     message: 'Username and password did not matched.',
@@ -26,7 +28,12 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         }
 
         if (user && user.password) {
-            if (!bcryptService.verifyHashString(data.password, user.password)) {
+            const passwordPassed = await bcryptService.verifyHashString(
+                data.password,
+                user.password
+            );
+
+            if (!passwordPassed) {
                 return res.status(401).json({
                     error: {
                         message: 'Username and password did not matched.',
@@ -35,6 +42,14 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
                     success: false,
                 });
             }
+        } else {
+            return res.status(401).json({
+                error: {
+                    message: 'Username and password did not matched.',
+                    code: 'INVALID_CREDENTIALS',
+                },
+                success: false,
+            });
         }
 
         const jwtPayload = {
@@ -274,7 +289,7 @@ const updatePassword = async (
         const updatedUser = await UserModel.findOneAndUpdate(
             { _id: req.body.userId },
             {
-                password: bcryptService.hashString(req.body.newPassword),
+                password: await bcryptService.hashString(req.body.newPassword),
             }
         );
 
@@ -407,9 +422,11 @@ const loginAsAdmin = async (
 
         const user = await AdminModel.findOne({
             username: data.username,
-        }).exec();
+        })
+            .select('+password')
+            .exec();
 
-        if (!user || user == null) {
+        if (!user || user == null || typeof user === 'undefined') {
             return res.status(401).json({
                 error: {
                     message: 'User does not exists.',
@@ -420,7 +437,12 @@ const loginAsAdmin = async (
         }
 
         if (user && user.password) {
-            if (!bcryptService.verifyHashString(data.password, user.password)) {
+            const passwordPassed = await bcryptService.verifyHashString(
+                data.password,
+                user.password
+            );
+
+            if (!passwordPassed) {
                 return res.status(401).json({
                     error: {
                         message: 'Username and password did not matched.',
@@ -429,6 +451,14 @@ const loginAsAdmin = async (
                     success: false,
                 });
             }
+        } else {
+            return res.status(401).json({
+                error: {
+                    message: 'Username and password did not matched.',
+                    code: 'INVALID_CREDENTIALS',
+                },
+                success: false,
+            });
         }
 
         const jwtPayload = {
@@ -462,5 +492,5 @@ export default {
     loginAsAdmin,
     updatePassword,
     updateDetails,
-    registerFirstUser
+    registerFirstUser,
 };

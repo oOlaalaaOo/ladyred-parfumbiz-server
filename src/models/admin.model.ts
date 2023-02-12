@@ -24,11 +24,11 @@ const adminSchema = new Schema(
     }
 );
 
-adminSchema.pre<IAdmin>('save', function (next: HookNextFunction) {
+adminSchema.pre<IAdmin>('save', async function (next: HookNextFunction) {
     if (!this.isModified('password')) return next();
 
     try {
-        this.password = bcryptService.hashString(this.password);
+        this.password = await bcryptService.hashString(this.password);
 
         return next();
     } catch (err) {
