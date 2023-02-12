@@ -340,7 +340,7 @@ const registerAdmin = async (
 ) => {
     try {
         const admin = await AdminModel.create({
-            username: 'redlion',
+            username: 'admin',
             password: 'redlion101',
             name: 'redlion',
             createdDate: new Date().toISOString(),

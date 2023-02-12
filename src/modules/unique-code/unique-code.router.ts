@@ -5,10 +5,10 @@ import uniqueCodeController from './unique-code.controller';
 const uniqueCodeRouter: Router = express.Router();
 
 // admin routes
-uniqueCodeRouter.route('/prefill').get(
-    // authMiddleware.isAuthorizedAsAdmin,
-    uniqueCodeController.prefillUniqueCodes
-);
+// uniqueCodeRouter.route('/prefill').get(
+//     // authMiddleware.isAuthorizedAsAdmin,
+//     uniqueCodeController.prefillUniqueCodes
+// );
 
 uniqueCodeRouter
     .route('/')
