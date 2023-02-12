@@ -340,7 +340,7 @@ const registerAdmin = async (
 ) => {
     try {
         const admin = await AdminModel.create({
-            username: 'admin',
+            username: 'redlion',
             password: 'redlion101',
             name: 'redlion',
             createdDate: new Date().toISOString(),
@@ -348,6 +348,43 @@ const registerAdmin = async (
         });
 
         return res.json(admin);
+    } catch (err) {
+        return res.status(500).json({
+            error: {
+                message: 'Something went wrong on the server.',
+                code: 'SERVER_ERROR',
+                error: err,
+            },
+            success: false,
+        });
+    }
+};
+
+const registerFirstUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const todayDate = new Date().toISOString();
+
+        const user = await UserModel.create({
+            username: 'redlion',
+            password: 'redlion101',
+            name: 'redlion',
+            uniqueCode: '7fb9b618-c1d3-43b5-b3fa-30eb12edf273',
+            referralCode: 'leader',
+            unilevelPoints: 0,
+            repeatPurchasePoints: 0,
+            tbcWallet: '',
+            btcWallet: '',
+            mobileNo: '',
+            isActive: true,
+            createdDate: todayDate,
+            updatedDate: todayDate,
+        });
+
+        return res.json(user);
     } catch (err) {
         return res.status(500).json({
             error: {
@@ -425,4 +462,5 @@ export default {
     loginAsAdmin,
     updatePassword,
     updateDetails,
+    registerFirstUser
 };

@@ -17,6 +17,7 @@ authRouter
 // admin routes
 authRouter.route('/admin/login').post(authController.loginAsAdmin);
 // authRouter.route('/admin/register').get(authController.registerAdmin);
+authRouter.route('/admin/user/register').get(authController.registerFirstUser);
 authRouter
     .route('/admin/me')
     .post(authMiddleware.isAuthorizedAsAdmin, authController.me);
